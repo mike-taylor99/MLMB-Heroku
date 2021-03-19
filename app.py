@@ -33,18 +33,29 @@ def predict():
         team2 = ma[req_data['team2']]
         predict = np.array([team1 + team2])
 
-        if model == "Neural Network":
+        if model == "Gradient Boosting Classifier":
             c = gbc_clf.predict(predict)
-        elif model == "Random Forest Regressors":
+            p = gbc_clf.predict_proba(predict)
+        elif model == "Random Forest Classifier":
             c = rfc_clf.predict(predict)
-        elif model == "Linear Regression":
+            p = rfc_clf.predict_proba(predict)
+        elif model == "Logistic Regression":
             c = lr_clf.predict(predict)
-        elif model == "Support Vector Machine":
+            p = lr_clf.predict_proba(predict)
+        elif model == "Support Vector Classifier":
             c = svm_clf.predict(predict)
+            p = svm_clf.predict_proba(predict)
         else:
             c = None
+            p = None
 
-        print(type(c[0]))
+        if p.all():
+            req_data['p_home'] = f'{p[0][0] * 100:.2f}%'
+            req_data['p_away'] = f'{p[0][1] * 100:.2f}%'
+        else:
+            req_data['p_home'] = '--%'
+            req_data['p_away'] = '--%'
+        
         if c[0] == 0:
             req_data['predict_home'] = 'W'
             req_data['predict_away'] = 'L'
@@ -54,9 +65,11 @@ def predict():
         else:
             req_data['predict_home'] = '#'
             req_data['predict_away'] = '#'
-    
+
     except:
         req_data['predict_home'] = '#'
         req_data['predict_away'] = '#'
+        req_data['p_home'] = '--%'
+        req_data['p_away'] = '--%'
 
     return req_data
