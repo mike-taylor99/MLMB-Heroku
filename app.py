@@ -46,9 +46,8 @@ def predict():
             c = svm_clf.predict(predict)
             p = svm_clf.predict_proba(predict)
         elif model == "Ensemble":
-            c = avg = np.mean(np.array([lr_clf.predict(predict), svm_clf.predict(predict), rfc_clf.predict(predict), gbc_clf.predict(predict)]), axis=0 )
-            p = np.array([[1-c[0], c[0]]])
-            c = c.round()
+            p = np.mean(np.array([lr_clf.predict_proba(predict), svm_clf.predict_proba(predict), rfc_clf.predict_proba(predict), gbc_clf.predict_proba(predict)]), axis=0 )
+            c = p[:,1].round()
         else:
             c = None
             p = None
