@@ -48,7 +48,7 @@ def predict():
         elif model == "Ensemble":
             c = avg = np.mean(np.array([lr_clf.predict(predict), svm_clf.predict(predict), rfc_clf.predict(predict), gbc_clf.predict(predict)]), axis=0 )
             p = np.array([[1-c[0], c[0]]])
-            c = c.astype(int)
+            c = c.round()
         else:
             c = None
             p = None
