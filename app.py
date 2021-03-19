@@ -45,11 +45,15 @@ def predict():
         elif model == "Support Vector Classifier":
             c = svm_clf.predict(predict)
             p = svm_clf.predict_proba(predict)
+        elif model == "Ensemble":
+            c = avg = np.mean(np.array([lr_clf.predict(predict), svm_clf.predict(predict), rfc_clf.predict(predict), gbc_clf.predict(predict)]), axis=0 )
+            p = np.array([[1-c[0], c[0]]])
+            c = c.astype(int)
         else:
             c = None
             p = None
 
-        if p.all():
+        if p.any():
             req_data['p_home'] = f'{p[0][0] * 100:.2f}%'
             req_data['p_away'] = f'{p[0][1] * 100:.2f}%'
         else:
